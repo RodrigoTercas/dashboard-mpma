@@ -117,8 +117,7 @@ select.saving{opacity:0.5;pointer-events:none}
 <div class="toast" id="toast"></div>
 
 <script>
-const SHEET_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vQyBh_TqfGDOlVtj5MjL2Ak7PF3syBzGNi6ZHjHChVZMJw-P9lFDOkvKzv60LjA8Wi32CpKoSGTwnkw/pub?output=tsv';
-const SCRIPT_URL='https://script.google.com/macros/s/AKfycbx1QGZvF3oR0QjOfkIBrJFCtOkVR1ehGj4YLot_piYaVhl9BIUqkFx360I1hhbSRpcY7A/exec';
+const API='https://script.google.com/macros/s/AKfycbyBa3CEs2cYVV45DCCaLFZPw66_hLn7Iz2OSiOQfyhDUmlpC5dX3WNwap-AZ_YbNw33ow/exec';
 
 let D=[];
 
@@ -129,68 +128,48 @@ function toast(msg,ok){
   setTimeout(()=>t.className='toast',2500);
 }
 
-function norm(v){
-  if(!v) return v;
-  return v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
-}
+function norm(v){if(!v)return'';return String(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();}
+function matchDrive(v){return norm(v)==='Sim'?'Sim':'Nao';}
+function matchStatus(v){const n=norm(v);if(n==='Concluido')return'Concluido';if(n==='Em Andamento')return'Em Andamento';if(n==='Pendente')return'Pendente';return'Agendado';}
+function matchImpl(v){const n=norm(v);if(n==='Implantado')return'Implantado';if(n==='Em Implantacao')return'Em Implantacao';return'Nao Implantado';}
 
-function matchDrive(v){ return norm(v)==='Sim'?'Sim':'Nao'; }
-function matchStatus(v){
-  const n=norm(v);
-  if(n==='Concluido') return 'Concluido';
-  if(n==='Em Andamento') return 'Em Andamento';
-  if(n==='Pendente') return 'Pendente';
-  return 'Agendado';
-}
-function matchImpl(v){
-  const n=norm(v);
-  if(n==='Implantado') return 'Implantado';
-  if(n==='Em Implantacao') return 'Em Implantacao';
-  return 'Nao Implantado';
-}
-
-function parseTSV(tsv){
-  const lines=tsv.trim().split('\n');
-  return lines.slice(1).filter(l=>l.trim()&&l.split('\t')[0].trim()!=='').map(line=>{
-    const c=line.split('\t');
-    return{
-      n:c[0]||'',
-      nm:c[1]||'',
-      pc:c[2]||'',
-      ex:c[3]||'',
-      dt:c[4]||'',
-      pf:c[5]||'',
-      dr:matchDrive(c[6]||'Nao'),
-      st:matchStatus(c[7]||'Agendado'),
-      im:matchImpl(c[8]||'Nao Implantado')
-    };
-  });
+function parseRows(rows){
+  return rows.map(r=>({
+    n:String(r['N']||r['n']||''),
+    nm:r['Procurador']||r['procurador']||'',
+    pc:r['Procuradoria']||r['procuradoria']||'',
+    ex:r['Exercicio']||r['exercicio']||'',
+    dt:r['Data Imersao']||r['data imersao']||'',
+    pf:r['Professor']||r['professor']||'',
+    dr:matchDrive(r['Drive']||r['drive']||'Nao'),
+    st:matchStatus(r['Status Imersao']||r['status imersao']||'Agendado'),
+    im:matchImpl(r['Implantacao Assistente']||r['implantacao assistente']||'Nao Implantado')
+  }));
 }
 
 async function loadData(){
   try{
-    const res=await fetch(SHEET_URL+'&_t='+Date.now());
-    const text=await res.text();
-    const parsed=parseTSV(text);
-    if(parsed.length>0){
-      D=parsed;
+    const res=await fetch(API);
+    const json=await res.json();
+    if(json&&json.length>0){
+      D=parseRows(json);
       rT();
       document.getElementById('lastUp').textContent='Atualizado: '+new Date().toLocaleTimeString('pt-BR');
     }
   }catch(e){
     console.log('Erro ao carregar',e);
+    toast('Erro ao carregar dados',false);
   }
 }
 
 async function saveField(row,field,value,el){
   el.classList.add('saving');
-  // Atualizar localmente primeiro
   if(field==='drive') D[row].dr=value;
   if(field==='status') D[row].st=value;
   if(field==='implantacao') D[row].im=value;
   uS();
   try{
-    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({row:row,field:field,value:value})});
+    await fetch(API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({row:row,field:field,value:value})});
     toast('Salvo na planilha!',true);
   }catch(e){
     toast('Erro ao salvar',false);
@@ -200,10 +179,7 @@ async function saveField(row,field,value,el){
 
 function rT(f){
   const t=document.getElementById('tB'),items=f||D;
-  if(items.length===0){
-    t.innerHTML='<tr><td colspan="9" class="loading">Carregando dados da planilha...</td></tr>';
-    return;
-  }
+  if(items.length===0){t.innerHTML='<tr><td colspan="9" class="loading">Carregando dados da planilha...</td></tr>';return;}
   t.innerHTML=items.map(p=>{
     const ri=D.indexOf(p),pc=p.pf.includes('Damous')?'pt-d':'pt-t';
     return`<tr>

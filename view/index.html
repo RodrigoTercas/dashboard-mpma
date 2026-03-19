@@ -112,20 +112,26 @@ td:first-child{font-weight:700;color:#1863dc;text-align:center;width:40px}
 <div class="footer">MPMA x InovaJur - Projeto de Imersao e Implantacao de Assistentes IA | 2026<br><a href="https://www.mpma.mp.br" target="_blank">www.mpma.mp.br</a> | InovaJur - Capacitacao Juridica e IA</div>
 
 <script>
-const SHEET_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vQyBh_TqfGDOlVtj5MjL2Ak7PF3syBzGNi6ZHjHChVZMJw-P9lFDOkvKzv60LjA8Wi32CpKoSGTwnkw/pub?output=tsv';
+const API='https://script.google.com/macros/s/AKfycbyBa3CEs2cYVV45DCCaLFZPw66_hLn7Iz2OSiOQfyhDUmlpC5dX3WNwap-AZ_YbNw33ow/exec';
 let D=[];
 
-function norm(v){if(!v)return v;return v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();}
+function norm(v){if(!v)return'';return String(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();}
 function matchDrive(v){return norm(v)==='Sim'?'Sim':'Nao';}
 function matchStatus(v){const n=norm(v);if(n==='Concluido')return'Concluido';if(n==='Em Andamento')return'Em Andamento';if(n==='Pendente')return'Pendente';return'Agendado';}
 function matchImpl(v){const n=norm(v);if(n==='Implantado')return'Implantado';if(n==='Em Implantacao')return'Em Implantacao';return'Nao Implantado';}
 
-function parseTSV(tsv){
-  const lines=tsv.trim().split('\n');
-  return lines.slice(1).filter(l=>l.trim()&&l.split('\t')[0].trim()!=='').map(line=>{
-    const c=line.split('\t');
-    return{n:c[0]||'',nm:c[1]||'',pc:c[2]||'',ex:c[3]||'',dt:c[4]||'',pf:c[5]||'',dr:matchDrive(c[6]||'Nao'),st:matchStatus(c[7]||'Agendado'),im:matchImpl(c[8]||'Nao Implantado')};
-  });
+function parseRows(rows){
+  return rows.map(r=>({
+    n:String(r['N']||r['n']||''),
+    nm:r['Procurador']||r['procurador']||'',
+    pc:r['Procuradoria']||r['procuradoria']||'',
+    ex:r['Exercicio']||r['exercicio']||'',
+    dt:r['Data Imersao']||r['data imersao']||'',
+    pf:r['Professor']||r['professor']||'',
+    dr:matchDrive(r['Drive']||r['drive']||'Nao'),
+    st:matchStatus(r['Status Imersao']||r['status imersao']||'Agendado'),
+    im:matchImpl(r['Implantacao Assistente']||r['implantacao assistente']||'Nao Implantado')
+  }));
 }
 
 function getBadge(val,type){
@@ -145,11 +151,10 @@ function getBadge(val,type){
 
 async function loadData(){
   try{
-    const res=await fetch(SHEET_URL+'&_t='+Date.now());
-    const text=await res.text();
-    const parsed=parseTSV(text);
-    if(parsed.length>0){
-      D=parsed;
+    const res=await fetch(API);
+    const json=await res.json();
+    if(json&&json.length>0){
+      D=parseRows(json);
       rT();
       document.getElementById('lastUp').textContent='Atualizado: '+new Date().toLocaleTimeString('pt-BR');
     }
