@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Imersao IA | MPMA x InovaJur</title>
+<title>Dashboard Imersao IA | MPMA x InovaJur - Visualizacao</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
@@ -16,10 +16,8 @@ body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#1a2744;min-height:
 .header-title p{font-size:12px;color:#6b7c93;margin-top:4px}
 .logo-ij{font-weight:800;font-size:20px;letter-spacing:1px;color:#1863dc}
 .stats-bar{display:flex;gap:15px;padding:20px 40px;flex-wrap:wrap}
-.stat-card{flex:1;min-width:150px;background:#fff;border:1px solid #dce3ed;border-radius:12px;padding:18px 20px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04);transition:transform .2s}
-.stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(24,99,220,0.1)}
-.sv{font-size:32px;font-weight:800}
-.sl{font-size:11px;color:#6b7c93;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.stat-card{flex:1;min-width:150px;background:#fff;border:1px solid #dce3ed;border-radius:12px;padding:18px 20px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.sv{font-size:32px;font-weight:800}.sl{font-size:11px;color:#6b7c93;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
 .c-blue{color:#1863dc}.c-green{color:#16a34a}.c-yellow{color:#ca8a04}.c-red{color:#dc2626}.c-purple{color:#7c3aed}
 .prof-bar{display:flex;gap:15px;padding:0 40px 20px;flex-wrap:wrap}
 .prof-card{flex:1;min-width:280px;background:#fff;border:1px solid #dce3ed;border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:15px;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
@@ -29,14 +27,10 @@ body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#1a2744;min-height:
 .th{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;flex-wrap:wrap;gap:10px}
 .th h2{font-size:18px;font-weight:700;color:#0d1526}
 .sb{padding:8px 16px;background:#fff;border:1px solid #dce3ed;border-radius:8px;color:#1a2744;font-size:13px;width:260px;outline:none;font-family:'Inter',sans-serif}
-.sb:focus{border-color:#1863dc;box-shadow:0 0 0 3px rgba(24,99,220,0.1)}
 table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #dce3ed;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
-thead th{background:linear-gradient(135deg,#1863dc,#0056a7);color:#fff;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:14px 12px;text-align:left;white-space:nowrap;position:sticky;top:0;z-index:10}
-tbody tr{transition:background .15s}
-tbody tr:hover{background:#eef3fb}
-tbody tr:nth-child(even){background:#f7f9fc}
-tbody tr:nth-child(even):hover{background:#eef3fb}
-td{padding:12px;font-size:13px;border-bottom:1px solid #e8ecf2;vertical-align:middle;color:#1a2744}
+thead th{background:linear-gradient(135deg,#1863dc,#0056a7);color:#fff;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:14px 12px;text-align:left;white-space:nowrap;position:sticky;top:0}
+tbody tr{transition:background .15s}tbody tr:hover{background:#eef3fb}tbody tr:nth-child(even){background:#f7f9fc}
+td{padding:12px;font-size:13px;border-bottom:1px solid #e8ecf2;vertical-align:middle}
 td:first-child{font-weight:700;color:#1863dc;text-align:center;width:40px}
 .badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
 .b-ag{background:#dbeafe;color:#1d4ed8}.b-ok{background:#dcfce7;color:#15803d}.b-ea{background:#fef9c3;color:#a16207}.b-pe{background:#fee2e2;color:#b91c1c}
@@ -49,7 +43,6 @@ td:first-child{font-weight:700;color:#1863dc;text-align:center;width:40px}
 .pb-txt{display:flex;justify-content:space-between;font-size:12px;color:#6b7c93;margin-top:6px}
 .loading{text-align:center;padding:40px;color:#6b7c93;font-size:14px}
 .reload-btn{background:#1863dc;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600}
-.reload-btn:hover{background:#0056a7}
 .last-update{font-size:11px;color:#6b7c93;margin-left:10px}
 .view-badge{background:#dbeafe;color:#1d4ed8;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:1px}
 @media(max-width:768px){.header,.stats-bar,.prof-bar,.tc{padding-left:20px;padding-right:20px}.header-title h1{font-size:16px}table{display:block;overflow-x:auto}.sb{width:100%}}
@@ -67,15 +60,9 @@ td:first-child{font-weight:700;color:#1863dc;text-align:center;width:40px}
   <div style="display:flex;align-items:center;gap:15px">
     <span class="view-badge">SOMENTE VISUALIZACAO</span>
     <div class="logo-ij">INOVAJUR.</div>
-    <span style="font-size:11px;color:#6b7c93">Capacitacao Juridica e IA</span>
   </div>
 </div>
-
-<div style="padding:20px 40px 0">
-  <div class="pb-bg"><div class="pb-fill" id="pBar" style="width:0%"></div></div>
-  <div class="pb-txt"><span id="pLbl">Carregando...</span><span id="pPct">0%</span></div>
-</div>
-
+<div style="padding:20px 40px 0"><div class="pb-bg"><div class="pb-fill" id="pBar" style="width:0%"></div></div><div class="pb-txt"><span id="pLbl">Carregando...</span><span id="pPct">0%</span></div></div>
 <div class="stats-bar">
   <div class="stat-card"><div class="sv c-blue" id="sT">-</div><div class="sl">Total</div></div>
   <div class="stat-card"><div class="sv c-green" id="sC">-</div><div class="sl">Concluidos</div></div>
@@ -83,123 +70,45 @@ td:first-child{font-weight:700;color:#1863dc;text-align:center;width:40px}
   <div class="stat-card"><div class="sv c-purple" id="sI">-</div><div class="sl">Implantados</div></div>
   <div class="stat-card"><div class="sv c-red" id="sP">-</div><div class="sl">Pendentes</div></div>
 </div>
-
 <div class="prof-bar">
-  <div class="prof-card">
-    <div class="prof-av" style="background:linear-gradient(135deg,#1863dc,#0056a7)">FD</div>
-    <div class="prof-info"><h3>Prof. Felipe Damous</h3><p>Instrutor - Gabinetes impares</p></div>
-  </div>
-  <div class="prof-card">
-    <div class="prof-av" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">RT</div>
-    <div class="prof-info"><h3>Prof. Rodrigo Tercas</h3><p>Instrutor - Gabinetes pares</p></div>
-  </div>
+  <div class="prof-card"><div class="prof-av" style="background:linear-gradient(135deg,#1863dc,#0056a7)">FD</div><div class="prof-info"><h3>Prof. Felipe Damous</h3><p>Instrutor - Gabinetes impares</p></div></div>
+  <div class="prof-card"><div class="prof-av" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">RT</div><div class="prof-info"><h3>Prof. Rodrigo Tercas</h3><p>Instrutor - Gabinetes pares</p></div></div>
 </div>
-
 <div class="tc">
   <div class="th">
-    <div style="display:flex;align-items:center;gap:15px">
-      <h2>Cronograma por Antiguidade</h2>
-      <button class="reload-btn" onclick="loadData()">Atualizar</button>
-      <span class="last-update" id="lastUp"></span>
-    </div>
+    <div style="display:flex;align-items:center;gap:15px"><h2>Cronograma por Antiguidade</h2><button class="reload-btn" onclick="loadData()">Atualizar</button><span class="last-update" id="lastUp"></span></div>
     <input type="text" class="sb" id="sBx" placeholder="Buscar procurador..." oninput="fT()">
   </div>
-  <table><thead><tr>
-    <th>N</th><th>Procurador(a)</th><th>Procuradoria</th><th>Exercicio</th><th>Data Imersao</th><th>Professor</th><th>Drive</th><th>Status Imersao</th><th>Implantacao Assistente</th>
-  </tr></thead><tbody id="tB"><tr><td colspan="9" class="loading">Carregando dados da planilha...</td></tr></tbody></table>
+  <table><thead><tr><th>N</th><th>Procurador(a)</th><th>Procuradoria</th><th>Exercicio</th><th>Data Imersao</th><th>Professor</th><th>Drive</th><th>Status Imersao</th><th>Implantacao Assistente</th></tr></thead><tbody id="tB"><tr><td colspan="9" class="loading">Carregando...</td></tr></tbody></table>
 </div>
-
-<div class="footer">MPMA x InovaJur - Projeto de Imersao e Implantacao de Assistentes IA | 2026<br><a href="https://www.mpma.mp.br" target="_blank">www.mpma.mp.br</a> | InovaJur - Capacitacao Juridica e IA</div>
-
+<div class="footer">MPMA x InovaJur - Projeto de Imersao e Implantacao de Assistentes IA | 2026<br><a href="https://www.mpma.mp.br" target="_blank">www.mpma.mp.br</a> | InovaJur</div>
 <script>
-const API='https://script.google.com/macros/s/AKfycbyBa3CEs2cYVV45DCCaLFZPw66_hLn7Iz2OSiOQfyhDUmlpC5dX3WNwap-AZ_YbNw33ow/exec';
+const API='https://script.google.com/macros/s/AKfycbxAispY3iQ_uFNG5aLSysS9IrBqQJQCqswC8BEf1SU6YzwCXOenT9qvFvsFaiOO3reXNQ/exec';
 let D=[];
-
 function norm(v){if(!v)return'';return String(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();}
-function matchDrive(v){return norm(v)==='Sim'?'Sim':'Nao';}
-function matchStatus(v){const n=norm(v);if(n==='Concluido')return'Concluido';if(n==='Em Andamento')return'Em Andamento';if(n==='Pendente')return'Pendente';return'Agendado';}
-function matchImpl(v){const n=norm(v);if(n==='Implantado')return'Implantado';if(n==='Em Implantacao')return'Em Implantacao';return'Nao Implantado';}
-
-function parseRows(rows){
-  return rows.map(r=>({
-    n:String(r['N']||r['n']||''),
-    nm:r['Procurador']||r['procurador']||'',
-    pc:r['Procuradoria']||r['procuradoria']||'',
-    ex:r['Exercicio']||r['exercicio']||'',
-    dt:r['Data Imersao']||r['data imersao']||'',
-    pf:r['Professor']||r['professor']||'',
-    dr:matchDrive(r['Drive']||r['drive']||'Nao'),
-    st:matchStatus(r['Status Imersao']||r['status imersao']||'Agendado'),
-    im:matchImpl(r['Implantacao Assistente']||r['implantacao assistente']||'Nao Implantado')
-  }));
-}
-
+function fmtDate(v){if(!v)return'';var s=String(v);if(s.indexOf('T')>=0){var d=new Date(s);return String(d.getUTCDate()).padStart(2,'0')+'/'+String(d.getUTCMonth()+1).padStart(2,'0')+'/'+d.getUTCFullYear();}return s;}
+function matchDr(v){return norm(v)==='Sim'?'Sim':'Nao';}
+function matchSt(v){var n=norm(v);if(n==='Concluido')return'Concluido';if(n==='Em Andamento')return'Em Andamento';if(n==='Pendente')return'Pendente';return'Agendado';}
+function matchIm(v){var n=norm(v);if(n==='Implantado')return'Implantado';if(n==='Em Implantacao')return'Em Implantacao';return'Nao Implantado';}
 function getBadge(val,type){
-  if(type==='drive') return val==='Sim'?'<span class="badge b-ok">Sim</span>':'<span class="badge b-pe">Nao</span>';
-  if(type==='status'){
-    if(val==='Concluido') return '<span class="badge b-ok">Concluido</span>';
-    if(val==='Em Andamento') return '<span class="badge b-ea">Em Andamento</span>';
-    if(val==='Pendente') return '<span class="badge b-pe">Pendente</span>';
-    return '<span class="badge b-ag">Agendado</span>';
-  }
-  if(type==='impl'){
-    if(val==='Implantado') return '<span class="badge b-ok">Implantado</span>';
-    if(val==='Em Implantacao') return '<span class="badge b-ea">Em Implantacao</span>';
-    return '<span class="badge b-pe">Nao Implantado</span>';
-  }
+  if(type==='drive')return val==='Sim'?'<span class="badge b-ok">Sim</span>':'<span class="badge b-pe">Nao</span>';
+  if(type==='status'){if(val==='Concluido')return'<span class="badge b-ok">Concluido</span>';if(val==='Em Andamento')return'<span class="badge b-ea">Em Andamento</span>';if(val==='Pendente')return'<span class="badge b-pe">Pendente</span>';return'<span class="badge b-ag">Agendado</span>';}
+  if(val==='Implantado')return'<span class="badge b-ok">Implantado</span>';if(val==='Em Implantacao')return'<span class="badge b-ea">Em Implantacao</span>';return'<span class="badge b-pe">Nao Implantado</span>';
 }
-
 async function loadData(){
-  try{
-    const res=await fetch(API);
-    const json=await res.json();
-    if(json&&json.length>0){
-      D=parseRows(json);
-      rT();
-      document.getElementById('lastUp').textContent='Atualizado: '+new Date().toLocaleTimeString('pt-BR');
-    }
-  }catch(e){console.log('Erro',e);}
+  try{var res=await fetch(API);var json=await res.json();if(json&&json.length>0){D=json.map(function(r){return{n:String(r['N']||''),nm:r['Procurador']||'',pc:r['Procuradoria']||'',ex:fmtDate(r['Exercicio']),dt:fmtDate(r['Data Imersao']),pf:r['Professor']||'',dr:matchDr(r['Drive']||''),st:matchSt(r['Status Imersao']||''),im:matchIm(r['Implantacao Assistente']||'')};});rT();document.getElementById('lastUp').textContent='Atualizado: '+new Date().toLocaleTimeString('pt-BR');}}
+  catch(e){console.log('Erro',e);}
 }
-
 function rT(f){
-  const t=document.getElementById('tB'),items=f||D;
-  if(items.length===0){t.innerHTML='<tr><td colspan="9" class="loading">Carregando dados da planilha...</td></tr>';return;}
-  t.innerHTML=items.map(p=>{
-    const pc=p.pf.includes('Damous')?'pt-d':'pt-t';
-    return`<tr>
-<td>${p.n}</td><td style="font-weight:500">${p.nm}</td><td>${p.pc}</td><td>${p.ex}</td><td>${p.dt}</td>
-<td><span class="pt ${pc}">${p.pf}</span></td>
-<td>${getBadge(p.dr,'drive')}</td>
-<td>${getBadge(p.st,'status')}</td>
-<td>${getBadge(p.im,'impl')}</td>
-</tr>`}).join('');
+  var t=document.getElementById('tB'),items=f||D;
+  if(items.length===0){t.innerHTML='<tr><td colspan="9" class="loading">Carregando...</td></tr>';return;}
+  t.innerHTML=items.map(function(p){var pc=p.pf.indexOf('Damous')>=0?'pt-d':'pt-t';
+    return'<tr><td>'+p.n+'</td><td style="font-weight:500">'+p.nm+'</td><td>'+p.pc+'</td><td>'+p.ex+'</td><td>'+p.dt+'</td><td><span class="pt '+pc+'">'+p.pf+'</span></td><td>'+getBadge(p.dr,'drive')+'</td><td>'+getBadge(p.st,'status')+'</td><td>'+getBadge(p.im,'impl')+'</td></tr>';}).join('');
   uS();
 }
-
-function uS(){
-  const t=D.length,c=D.filter(d=>d.st==='Concluido').length,
-  a=D.filter(d=>d.st==='Agendado'||d.st==='Em Andamento').length,
-  im=D.filter(d=>d.im==='Implantado').length,
-  pe=D.filter(d=>d.st==='Pendente').length,
-  pct=t?Math.round(c/t*100):0;
-  document.getElementById('sT').textContent=t||'-';
-  document.getElementById('sC').textContent=c;
-  document.getElementById('sA').textContent=a;
-  document.getElementById('sI').textContent=im;
-  document.getElementById('sP').textContent=pe;
-  document.getElementById('pBar').style.width=pct+'%';
-  document.getElementById('pLbl').textContent=c+' de '+t+' concluidos';
-  document.getElementById('pPct').textContent=pct+'%';
-}
-
-function fT(){
-  const q=document.getElementById('sBx').value.toLowerCase();
-  if(!q){rT();return}
-  rT(D.filter(d=>d.nm.toLowerCase().includes(q)||d.pc.toLowerCase().includes(q)||d.pf.toLowerCase().includes(q)));
-}
-
-loadData();
-setInterval(loadData,120000);
+function uS(){var t=D.length,c=D.filter(function(d){return d.st==='Concluido'}).length,a=D.filter(function(d){return d.st==='Agendado'||d.st==='Em Andamento'}).length,im=D.filter(function(d){return d.im==='Implantado'}).length,pe=D.filter(function(d){return d.st==='Pendente'}).length,pct=t?Math.round(c/t*100):0;document.getElementById('sT').textContent=t||'-';document.getElementById('sC').textContent=c;document.getElementById('sA').textContent=a;document.getElementById('sI').textContent=im;document.getElementById('sP').textContent=pe;document.getElementById('pBar').style.width=pct+'%';document.getElementById('pLbl').textContent=c+' de '+t+' concluidos';document.getElementById('pPct').textContent=pct+'%';}
+function fT(){var q=document.getElementById('sBx').value.toLowerCase();if(!q){rT();return;}rT(D.filter(function(d){return d.nm.toLowerCase().indexOf(q)>=0||d.pc.toLowerCase().indexOf(q)>=0||d.pf.toLowerCase().indexOf(q)>=0;}));}
+loadData();setInterval(loadData,120000);
 </script>
 </body>
 </html>
