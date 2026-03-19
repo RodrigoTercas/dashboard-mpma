@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Imersao IA | MPMA x InovaJur</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#1a2744;min-height:100vh}
+.header{background:#fff;border-bottom:3px solid #1863dc;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.header-left{display:flex;align-items:center;gap:25px}
+.logo-mpma{width:65px;height:65px;background:linear-gradient(135deg,#1863dc,#0056a7);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:#fff;text-align:center;line-height:1.2;padding:5px}
+.header-title h1{font-size:20px;font-weight:700;color:#0d1526}
+.header-title h1 span{color:#1863dc}
+.header-title p{font-size:12px;color:#6b7c93;margin-top:4px}
+.logo-ij{font-weight:800;font-size:20px;letter-spacing:1px;color:#1863dc}
+.stats-bar{display:flex;gap:15px;padding:20px 40px;flex-wrap:wrap}
+.stat-card{flex:1;min-width:150px;background:#fff;border:1px solid #dce3ed;border-radius:12px;padding:18px 20px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.04);transition:transform .2s}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(24,99,220,0.1)}
+.sv{font-size:32px;font-weight:800}
+.sl{font-size:11px;color:#6b7c93;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.c-blue{color:#1863dc}.c-green{color:#16a34a}.c-yellow{color:#ca8a04}.c-red{color:#dc2626}.c-purple{color:#7c3aed}
+.prof-bar{display:flex;gap:15px;padding:0 40px 20px;flex-wrap:wrap}
+.prof-card{flex:1;min-width:280px;background:#fff;border:1px solid #dce3ed;border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:15px;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.prof-av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#fff;flex-shrink:0}
+.prof-info h3{font-size:14px;font-weight:600;color:#0d1526}.prof-info p{font-size:12px;color:#6b7c93;margin-top:2px}
+.tc{padding:0 40px 40px}
+.th{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;flex-wrap:wrap;gap:10px}
+.th h2{font-size:18px;font-weight:700;color:#0d1526}
+.sb{padding:8px 16px;background:#fff;border:1px solid #dce3ed;border-radius:8px;color:#1a2744;font-size:13px;width:260px;outline:none;font-family:'Inter',sans-serif}
+.sb:focus{border-color:#1863dc;box-shadow:0 0 0 3px rgba(24,99,220,0.1)}
+table{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #dce3ed;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+thead th{background:linear-gradient(135deg,#1863dc,#0056a7);color:#fff;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:14px 12px;text-align:left;white-space:nowrap;position:sticky;top:0;z-index:10}
+tbody tr{transition:background .15s}
+tbody tr:hover{background:#eef3fb}
+tbody tr:nth-child(even){background:#f7f9fc}
+tbody tr:nth-child(even):hover{background:#eef3fb}
+td{padding:12px;font-size:13px;border-bottom:1px solid #e8ecf2;vertical-align:middle;color:#1a2744}
+td:first-child{font-weight:700;color:#1863dc;text-align:center;width:40px}
+.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.b-ag{background:#dbeafe;color:#1d4ed8}.b-ok{background:#dcfce7;color:#15803d}.b-ea{background:#fef9c3;color:#a16207}.b-pe{background:#fee2e2;color:#b91c1c}
+.b-sim{background:#dcfce7;color:#15803d}.b-nao{background:#fee2e2;color:#b91c1c}
+.b-imp{background:#dcfce7;color:#15803d}.b-eimp{background:#fef9c3;color:#a16207}.b-nimp{background:#fee2e2;color:#b91c1c}
+select{background:#fff;color:#1a2744;border:1px solid #dce3ed;border-radius:6px;padding:6px 8px;font-size:12px;cursor:pointer;outline:none;font-family:'Inter',sans-serif}
+select:focus{border-color:#1863dc;box-shadow:0 0 0 3px rgba(24,99,220,0.1)}
+.pt{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.pt-d{background:#dbeafe;color:#1d4ed8}.pt-t{background:#ede9fe;color:#6d28d9}
+.footer{text-align:center;padding:20px;color:#6b7c93;font-size:11px;border-top:1px solid #dce3ed;background:#fff}
+.footer a{color:#1863dc;text-decoration:none}
+.pb-bg{width:100%;height:10px;background:#dce3ed;border-radius:10px;overflow:hidden}
+.pb-fill{height:100%;background:linear-gradient(90deg,#1863dc,#16a34a);border-radius:10px;transition:width .5s}
+.pb-txt{display:flex;justify-content:space-between;font-size:12px;color:#6b7c93;margin-top:6px}
+@media(max-width:768px){.header,.stats-bar,.prof-bar,.tc{padding-left:20px;padding-right:20px}.header-title h1{font-size:16px}table{display:block;overflow-x:auto}.sb{width:100%}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-left">
+    <div class="logo-mpma">MPMA</div>
+    <div class="header-title">
+      <h1>Projeto de <span>Imersao</span> e Implantacao de <span>Assistentes IA</span></h1>
+      <p>Ministerio Publico do Maranhao - Procuradoria-Geral de Justica | 33 Gabinetes</p>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="logo-ij">INOVAJUR.</div>
+    <span style="font-size:11px;color:#6b7c93">Capacitacao Juridica e IA</span>
+  </div>
+</div>
+
+<div style="padding:20px 40px 0">
+  <div class="pb-bg"><div class="pb-fill" id="pBar" style="width:0%"></div></div>
+  <div class="pb-txt"><span id="pLbl">0 de 33 concluidos</span><span id="pPct">0%</span></div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-card"><div class="sv c-blue" id="sT">33</div><div class="sl">Total</div></div>
+  <div class="stat-card"><div class="sv c-green" id="sC">0</div><div class="sl">Concluidos</div></div>
+  <div class="stat-card"><div class="sv c-yellow" id="sA">33</div><div class="sl">Agendados</div></div>
+  <div class="stat-card"><div class="sv c-purple" id="sI">0</div><div class="sl">Implantados</div></div>
+  <div class="stat-card"><div class="sv c-red" id="sP">0</div><div class="sl">Pendentes</div></div>
+</div>
+
+<div class="prof-bar">
+  <div class="prof-card">
+    <div class="prof-av" style="background:linear-gradient(135deg,#1863dc,#0056a7)">FD</div>
+    <div class="prof-info"><h3>Prof. Felipe Damous</h3><p>Instrutor - Gabinetes impares</p></div>
+  </div>
+  <div class="prof-card">
+    <div class="prof-av" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">RT</div>
+    <div class="prof-info"><h3>Prof. Rodrigo Tercas</h3><p>Instrutor - Gabinetes pares</p></div>
+  </div>
+</div>
+
+<div class="tc">
+  <div class="th">
+    <h2>Cronograma por Antiguidade</h2>
+    <input type="text" class="sb" id="sBx" placeholder="Buscar procurador..." oninput="fT()">
+  </div>
+  <table><thead><tr>
+    <th>N</th><th>Procurador(a)</th><th>Procuradoria</th><th>Exercicio</th><th>Data Imersao</th><th>Professor</th><th>Drive</th><th>Status Imersao</th><th>Implantacao Assistente</th>
+  </tr></thead><tbody id="tB"></tbody></table>
+</div>
+
+<div class="footer">MPMA x InovaJur - Projeto de Imersao e Implantacao de Assistentes IA | 2026<br><a href="https://www.mpma.mp.br" target="_blank">www.mpma.mp.br</a> | InovaJur - Capacitacao Juridica e IA</div>
+
+<script>
+const P=[
+{n:1,nm:"Jose Antonio Oliveira Bents",pc:"1a Civel",ex:"10/05/1991"},
+{n:2,nm:"Eduardo Jorge Hiluy Nicolau",pc:"3a Criminal",ex:"12/03/1992"},
+{n:3,nm:"Iracy Martins Figueiredo Aguiar",pc:"2a Civel",ex:"20/09/1993"},
+{n:4,nm:"Ana Lidia de Mello e Silva Moraes",pc:"3a Civel",ex:"24/09/1993"},
+{n:5,nm:"Ligia Maria da Silva Cavalcanti",pc:"4a Criminal",ex:"08/11/1993"},
+{n:6,nm:"Krishnamurti Lopes Mendes Franca",pc:"6a Criminal",ex:"08/03/1994"},
+{n:7,nm:"Raimundo Nonato de Carvalho Filho",pc:"4a Civel",ex:"07/03/1996"},
+{n:8,nm:"Selene Coelho de Lacerda",pc:"7a Criminal",ex:"29/03/1996"},
+{n:9,nm:"Jose Henrique Marques Moreira",pc:"5a Civel",ex:"29/03/1996"},
+{n:10,nm:"Domingas de Jesus Froz Gomes",pc:"5a Criminal",ex:"17/07/1996"},
+{n:11,nm:"Francisco das Chagas Barros de Sousa",pc:"7a Civel",ex:"30/12/1997"},
+{n:12,nm:"Terezinha de Jesus Anchieta Guerreiro",pc:"9a Civel",ex:"04/03/1998"},
+{n:13,nm:"Regina Maria da Costa Leite",pc:"Sub. Adm./ 8a Criminal",ex:"18/02/1999"},
+{n:14,nm:"Paulo Roberto Saldanha Ribeiro",pc:"10a Civel",ex:"02/03/2004"},
+{n:15,nm:"Rita de Cassia Maia Baptista",pc:"20a Civel",ex:"13/09/2006"},
+{n:16,nm:"Marco Antonio Anchieta Guerreiro",pc:"12a Civel",ex:"20/06/2007"},
+{n:17,nm:"Maria de Fatima Rodrigues Travassos Cordeiro",pc:"2a Criminal",ex:"06/11/2007"},
+{n:18,nm:"Samara Ascar Sauaia",pc:"13a Civel",ex:"09/06/2008"},
+{n:19,nm:"Themis Maria Pacheco de Carvalho",pc:"14a Civel",ex:"26/09/2008"},
+{n:20,nm:"Maria Luiza Ribeiro Martins",pc:"9a Criminal",ex:"26/09/2008"},
+{n:21,nm:"Marilea Campos dos Santos Costa",pc:"15a Civel",ex:"25/05/2010"},
+{n:22,nm:"Joaquim Henrique de Carvalho Lobato",pc:"10a Criminal",ex:"28/05/2010"},
+{n:23,nm:"Sandra Lucia Mendes Alves Elouf",pc:"16a Civel",ex:"06/03/2013"},
+{n:24,nm:"Carlos Jorge Avelar Silva",pc:"1a Criminal",ex:"06/02/2015"},
+{n:25,nm:"Lize de Maria Brandao de Sa Costa",pc:"6a Civel",ex:"08/03/2018"},
+{n:26,nm:"Danilo Jose de Castro Ferreira",pc:"PGJ/ 21a Civel",ex:"04/07/2022"},
+{n:27,nm:"Orfileno Bezerra Neto",pc:"Sub. Jurid./ 8a Civel",ex:"03/07/2023"},
+{n:28,nm:"Jose Ribamar Sanches Prazeres",pc:"11a Civel",ex:"16/11/2023"},
+{n:29,nm:"Paulo Silvestre Avelar Silva",pc:"19a Civel",ex:"18/12/2023"},
+{n:30,nm:"Valdenir Cavalcante Lima",pc:"22a Civel",ex:"04/04/2025"},
+{n:31,nm:"Marcia Lima Buhatem",pc:"23a Civel",ex:"28/04/2025"},
+{n:32,nm:"Abel Jose Rodrigues Neto",pc:"17a Civel",ex:"12/08/2025"},
+{n:33,nm:"Haroldo Paiva de Brito",pc:"24a Civel",ex:"12/08/2025"}
+];
+
+function gD(n){
+  let c=new Date(2026,3,6);
+  const ds=[];
+  while(ds.length<n){
+    const w=c.getDay();
+    if(w>=1&&w<=5){ds.push(new Date(c));if(ds.length<n)ds.push(new Date(c));c.setDate(c.getDate()+1)}
+    else c.setDate(c.getDate()+1);
+  }
+  return ds;
+}
+const dates=gD(33);
+function fd(d){return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear()}
+const K='mpma_dash_v3';
+function lD(){
+  const s=localStorage.getItem(K);
+  if(s)return JSON.parse(s);
+  return P.map((p,i)=>({...p,dt:fd(dates[i]),pf:i%2===0?"Felipe Damous":"Rodrigo Tercas",dr:"Nao",st:"Agendado",im:"Nao Implantado"}));
+}
+function sD(d){localStorage.setItem(K,JSON.stringify(d))}
+let D=lD();
+
+function rT(f){
+  const t=document.getElementById('tB'),items=f||D;
+  t.innerHTML=items.map(p=>{
+    const ri=D.indexOf(p),pc=p.pf==="Felipe Damous"?"pt-d":"pt-t";
+    return`<tr>
+<td>${p.n}</td><td style="font-weight:500">${p.nm}</td><td>${p.pc}</td><td>${p.ex}</td><td>${p.dt}</td>
+<td><span class="pt ${pc}">${p.pf}</span></td>
+<td><select onchange="uF(${ri},'dr',this.value)"><option value="Nao"${p.dr==='Nao'?' selected':''}>Nao</option><option value="Sim"${p.dr==='Sim'?' selected':''}>Sim</option></select></td>
+<td><select onchange="uF(${ri},'st',this.value)"><option value="Agendado"${p.st==='Agendado'?' selected':''}>Agendado</option><option value="Em Andamento"${p.st==='Em Andamento'?' selected':''}>Em Andamento</option><option value="Concluido"${p.st==='Concluido'?' selected':''}>Concluido</option><option value="Pendente"${p.st==='Pendente'?' selected':''}>Pendente</option></select></td>
+<td><select onchange="uF(${ri},'im',this.value)"><option value="Nao Implantado"${p.im==='Nao Implantado'?' selected':''}>Nao Implantado</option><option value="Em Implantacao"${p.im==='Em Implantacao'?' selected':''}>Em Implantacao</option><option value="Implantado"${p.im==='Implantado'?' selected':''}>Implantado</option></select></td>
+</tr>`}).join('');
+  uS();
+}
+
+function uF(i,f,v){D[i][f]=v;sD(D);rT()}
+
+function uS(){
+  const t=D.length,c=D.filter(d=>d.st==='Concluido').length,a=D.filter(d=>d.st==='Agendado'||d.st==='Em Andamento').length,
+  im=D.filter(d=>d.im==='Implantado').length,pe=D.filter(d=>d.st==='Pendente').length,pct=Math.round(c/t*100);
+  document.getElementById('sT').textContent=t;
+  document.getElementById('sC').textContent=c;
+  document.getElementById('sA').textContent=a;
+  document.getElementById('sI').textContent=im;
+  document.getElementById('sP').textContent=pe;
+  document.getElementById('pBar').style.width=pct+'%';
+  document.getElementById('pLbl').textContent=c+' de '+t+' concluidos';
+  document.getElementById('pPct').textContent=pct+'%';
+}
+
+function fT(){
+  const q=document.getElementById('sBx').value.toLowerCase();
+  if(!q){rT();return}
+  rT(D.filter(d=>d.nm.toLowerCase().includes(q)||d.pc.toLowerCase().includes(q)||d.pf.toLowerCase().includes(q)));
+}
+rT();
+</script>
+</body>
+</html>
