@@ -38,9 +38,9 @@ tbody tr:nth-child(even){background:#f7f9fc}
 tbody tr:nth-child(even):hover{background:#eef3fb}
 td{padding:12px;font-size:13px;border-bottom:1px solid #e8ecf2;vertical-align:middle;color:#1a2744}
 td:first-child{font-weight:700;color:#1863dc;text-align:center;width:40px}
-.badge{display:inline-block;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
-.b-ag{background:#dbeafe;color:#1d4ed8}.b-ok{background:#dcfce7;color:#15803d}.b-ea{background:#fef9c3;color:#a16207}.b-pe{background:#fee2e2;color:#b91c1c}
-.b-sim{background:#dcfce7;color:#15803d}.b-nao{background:#fee2e2;color:#b91c1c}
+select{background:#fff;color:#1a2744;border:1px solid #dce3ed;border-radius:6px;padding:6px 8px;font-size:12px;cursor:pointer;outline:none;font-family:'Inter',sans-serif}
+select:focus{border-color:#1863dc;box-shadow:0 0 0 3px rgba(24,99,220,0.1)}
+select.saving{opacity:0.5;pointer-events:none}
 .pt{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600}
 .pt-d{background:#dbeafe;color:#1d4ed8}.pt-t{background:#ede9fe;color:#6d28d9}
 .footer{text-align:center;padding:20px;color:#6b7c93;font-size:11px;border-top:1px solid #dce3ed;background:#fff}
@@ -52,6 +52,10 @@ td:first-child{font-weight:700;color:#1863dc;text-align:center;width:40px}
 .reload-btn{background:#1863dc;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600}
 .reload-btn:hover{background:#0056a7}
 .last-update{font-size:11px;color:#6b7c93;margin-left:10px}
+.toast{position:fixed;bottom:20px;right:20px;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;color:#fff;z-index:999;opacity:0;transition:opacity .3s}
+.toast.show{opacity:1}
+.toast.ok{background:#16a34a}
+.toast.err{background:#dc2626}
 @media(max-width:768px){.header,.stats-bar,.prof-bar,.tc{padding-left:20px;padding-right:20px}.header-title h1{font-size:16px}table{display:block;overflow-x:auto}.sb{width:100%}}
 </style>
 </head>
@@ -110,78 +114,71 @@ td:first-child{font-weight:700;color:#1863dc;text-align:center;width:40px}
 
 <div class="footer">MPMA x InovaJur - Projeto de Imersao e Implantacao de Assistentes IA | 2026<br><a href="https://www.mpma.mp.br" target="_blank">www.mpma.mp.br</a> | InovaJur - Capacitacao Juridica e IA</div>
 
+<div class="toast" id="toast"></div>
+
 <script>
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQyBh_TqfGDOlVtj5MjL2Ak7PF3syBzGNi6ZHjHChVZMJw-P9lFDOkvKzv60LjA8Wi32CpKoSGTwnkw/pub?output=tsv';
+const SHEET_URL='https://docs.google.com/spreadsheets/d/e/2PACX-1vQyBh_TqfGDOlVtj5MjL2Ak7PF3syBzGNi6ZHjHChVZMJw-P9lFDOkvKzv60LjA8Wi32CpKoSGTwnkw/pub?output=tsv';
+const SCRIPT_URL='https://script.google.com/macros/s/AKfycbx1QGZvF3oR0QjOfkIBrJFCtOkVR1ehGj4YLot_piYaVhl9BIUqkFx360I1hhbSRpcY7A/exec';
 
-let D = [];
+let D=[];
 
-function parseTSV(tsv) {
-  const lines = tsv.trim().split('\n');
-  const headers = lines[0].split('\t');
-  return lines.slice(1).filter(l => l.trim()).map(line => {
-    const cols = line.split('\t');
-    return {
-      n: cols[0] || '',
-      nm: cols[1] || '',
-      pc: cols[2] || '',
-      ex: cols[3] || '',
-      dt: cols[4] || '',
-      pf: cols[5] || '',
-      dr: cols[6] || 'Nao',
-      st: cols[7] || 'Agendado',
-      im: cols[8] || 'Nao Implantado'
-    };
+function toast(msg,ok){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast show '+(ok?'ok':'err');
+  setTimeout(()=>t.className='toast',2500);
+}
+
+function parseTSV(tsv){
+  const lines=tsv.trim().split('\n');
+  return lines.slice(1).filter(l=>l.trim()).map(line=>{
+    const c=line.split('\t');
+    return{n:c[0]||'',nm:c[1]||'',pc:c[2]||'',ex:c[3]||'',dt:c[4]||'',pf:c[5]||'',dr:c[6]||'Nao',st:c[7]||'Agendado',im:c[8]||'Nao Implantado'};
   });
 }
 
-async function loadData() {
-  try {
-    document.getElementById('tB').innerHTML = '<tr><td colspan="9" class="loading">Carregando dados da planilha...</td></tr>';
-    const res = await fetch(SHEET_URL + '&_t=' + Date.now());
-    const text = await res.text();
-    D = parseTSV(text);
+async function loadData(){
+  try{
+    document.getElementById('tB').innerHTML='<tr><td colspan="9" class="loading">Carregando...</td></tr>';
+    const res=await fetch(SHEET_URL+'&_t='+Date.now());
+    const text=await res.text();
+    D=parseTSV(text);
     rT();
-    const now = new Date();
-    document.getElementById('lastUp').textContent = 'Atualizado: ' + now.toLocaleTimeString('pt-BR');
-  } catch(e) {
-    document.getElementById('tB').innerHTML = '<tr><td colspan="9" class="loading">Erro ao carregar. Verifique a conexao.</td></tr>';
+    document.getElementById('lastUp').textContent='Atualizado: '+new Date().toLocaleTimeString('pt-BR');
+  }catch(e){
+    document.getElementById('tB').innerHTML='<tr><td colspan="9" class="loading">Erro ao carregar.</td></tr>';
   }
 }
 
-function getBadge(val, type) {
-  if (type === 'drive') {
-    return val === 'Sim' ? '<span class="badge b-sim">Sim</span>' : '<span class="badge b-nao">Nao</span>';
+async function saveField(row,field,value,el){
+  el.classList.add('saving');
+  try{
+    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({row:row,field:field,value:value})});
+    D[row][field==='drive'?'dr':field==='status'?'st':'im']=value;
+    uS();
+    toast('Salvo com sucesso!',true);
+  }catch(e){
+    toast('Erro ao salvar',false);
   }
-  if (type === 'status') {
-    if (val === 'Concluido') return '<span class="badge b-ok">Concluido</span>';
-    if (val === 'Em Andamento') return '<span class="badge b-ea">Em Andamento</span>';
-    if (val === 'Pendente') return '<span class="badge b-pe">Pendente</span>';
-    return '<span class="badge b-ag">Agendado</span>';
-  }
-  if (type === 'impl') {
-    if (val === 'Implantado') return '<span class="badge b-ok">Implantado</span>';
-    if (val === 'Em Implantacao') return '<span class="badge b-ea">Em Implantacao</span>';
-    return '<span class="badge b-pe">Nao Implantado</span>';
-  }
+  el.classList.remove('saving');
 }
 
-function rT(f) {
-  const t = document.getElementById('tB'), items = f || D;
-  t.innerHTML = items.map(p => {
-    const pc = p.pf.includes('Damous') ? 'pt-d' : 'pt-t';
-    return `<tr>
+function rT(f){
+  const t=document.getElementById('tB'),items=f||D;
+  t.innerHTML=items.map(p=>{
+    const ri=D.indexOf(p),pc=p.pf.includes('Damous')?'pt-d':'pt-t';
+    return`<tr>
 <td>${p.n}</td><td style="font-weight:500">${p.nm}</td><td>${p.pc}</td><td>${p.ex}</td><td>${p.dt}</td>
 <td><span class="pt ${pc}">${p.pf}</span></td>
-<td>${getBadge(p.dr,'drive')}</td>
-<td>${getBadge(p.st,'status')}</td>
-<td>${getBadge(p.im,'impl')}</td>
-</tr>`;
-  }).join('');
+<td><select onchange="saveField(${ri},'drive',this.value,this)"><option value="Nao"${p.dr==='Nao'?' selected':''}>Nao</option><option value="Sim"${p.dr==='Sim'?' selected':''}>Sim</option></select></td>
+<td><select onchange="saveField(${ri},'status',this.value,this)"><option value="Agendado"${p.st==='Agendado'?' selected':''}>Agendado</option><option value="Em Andamento"${p.st==='Em Andamento'?' selected':''}>Em Andamento</option><option value="Concluido"${p.st==='Concluido'?' selected':''}>Concluido</option><option value="Pendente"${p.st==='Pendente'?' selected':''}>Pendente</option></select></td>
+<td><select onchange="saveField(${ri},'implantacao',this.value,this)"><option value="Nao Implantado"${p.im==='Nao Implantado'?' selected':''}>Nao Implantado</option><option value="Em Implantacao"${p.im==='Em Implantacao'?' selected':''}>Em Implantacao</option><option value="Implantado"${p.im==='Implantado'?' selected':''}>Implantado</option></select></td>
+</tr>`}).join('');
   uS();
 }
 
-function uS() {
-  const t=D.length, c=D.filter(d=>d.st==='Concluido').length,
+function uS(){
+  const t=D.length,c=D.filter(d=>d.st==='Concluido').length,
   a=D.filter(d=>d.st==='Agendado'||d.st==='Em Andamento').length,
   im=D.filter(d=>d.im==='Implantado').length,
   pe=D.filter(d=>d.st==='Pendente').length,
@@ -196,15 +193,14 @@ function uS() {
   document.getElementById('pPct').textContent=pct+'%';
 }
 
-function fT() {
+function fT(){
   const q=document.getElementById('sBx').value.toLowerCase();
   if(!q){rT();return}
   rT(D.filter(d=>d.nm.toLowerCase().includes(q)||d.pc.toLowerCase().includes(q)||d.pf.toLowerCase().includes(q)));
 }
 
-// Auto-refresh a cada 2 minutos
 loadData();
-setInterval(loadData, 120000);
+setInterval(loadData,120000);
 </script>
 </body>
 </html>
