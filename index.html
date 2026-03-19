@@ -129,34 +129,69 @@ function toast(msg,ok){
   setTimeout(()=>t.className='toast',2500);
 }
 
+function norm(v){
+  if(!v) return v;
+  return v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+}
+
+function matchDrive(v){ return norm(v)==='Sim'?'Sim':'Nao'; }
+function matchStatus(v){
+  const n=norm(v);
+  if(n==='Concluido') return 'Concluido';
+  if(n==='Em Andamento') return 'Em Andamento';
+  if(n==='Pendente') return 'Pendente';
+  return 'Agendado';
+}
+function matchImpl(v){
+  const n=norm(v);
+  if(n==='Implantado') return 'Implantado';
+  if(n==='Em Implantacao') return 'Em Implantacao';
+  return 'Nao Implantado';
+}
+
 function parseTSV(tsv){
   const lines=tsv.trim().split('\n');
-  return lines.slice(1).filter(l=>l.trim()).map(line=>{
+  return lines.slice(1).filter(l=>l.trim()&&l.split('\t')[0].trim()!=='').map(line=>{
     const c=line.split('\t');
-    return{n:c[0]||'',nm:c[1]||'',pc:c[2]||'',ex:c[3]||'',dt:c[4]||'',pf:c[5]||'',dr:c[6]||'Nao',st:c[7]||'Agendado',im:c[8]||'Nao Implantado'};
+    return{
+      n:c[0]||'',
+      nm:c[1]||'',
+      pc:c[2]||'',
+      ex:c[3]||'',
+      dt:c[4]||'',
+      pf:c[5]||'',
+      dr:matchDrive(c[6]||'Nao'),
+      st:matchStatus(c[7]||'Agendado'),
+      im:matchImpl(c[8]||'Nao Implantado')
+    };
   });
 }
 
 async function loadData(){
   try{
-    document.getElementById('tB').innerHTML='<tr><td colspan="9" class="loading">Carregando...</td></tr>';
     const res=await fetch(SHEET_URL+'&_t='+Date.now());
     const text=await res.text();
-    D=parseTSV(text);
-    rT();
-    document.getElementById('lastUp').textContent='Atualizado: '+new Date().toLocaleTimeString('pt-BR');
+    const parsed=parseTSV(text);
+    if(parsed.length>0){
+      D=parsed;
+      rT();
+      document.getElementById('lastUp').textContent='Atualizado: '+new Date().toLocaleTimeString('pt-BR');
+    }
   }catch(e){
-    document.getElementById('tB').innerHTML='<tr><td colspan="9" class="loading">Erro ao carregar.</td></tr>';
+    console.log('Erro ao carregar',e);
   }
 }
 
 async function saveField(row,field,value,el){
   el.classList.add('saving');
+  // Atualizar localmente primeiro
+  if(field==='drive') D[row].dr=value;
+  if(field==='status') D[row].st=value;
+  if(field==='implantacao') D[row].im=value;
+  uS();
   try{
     await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({row:row,field:field,value:value})});
-    D[row][field==='drive'?'dr':field==='status'?'st':'im']=value;
-    uS();
-    toast('Salvo com sucesso!',true);
+    toast('Salvo na planilha!',true);
   }catch(e){
     toast('Erro ao salvar',false);
   }
@@ -165,6 +200,10 @@ async function saveField(row,field,value,el){
 
 function rT(f){
   const t=document.getElementById('tB'),items=f||D;
+  if(items.length===0){
+    t.innerHTML='<tr><td colspan="9" class="loading">Carregando dados da planilha...</td></tr>';
+    return;
+  }
   t.innerHTML=items.map(p=>{
     const ri=D.indexOf(p),pc=p.pf.includes('Damous')?'pt-d':'pt-t';
     return`<tr>
@@ -183,7 +222,7 @@ function uS(){
   im=D.filter(d=>d.im==='Implantado').length,
   pe=D.filter(d=>d.st==='Pendente').length,
   pct=t?Math.round(c/t*100):0;
-  document.getElementById('sT').textContent=t;
+  document.getElementById('sT').textContent=t||'-';
   document.getElementById('sC').textContent=c;
   document.getElementById('sA').textContent=a;
   document.getElementById('sI').textContent=im;
