@@ -38,9 +38,9 @@ tbody tr:nth-child(even){background:#f7f9fc}
 tbody tr:nth-child(even):hover{background:#eef3fb}
 td{padding:12px;font-size:13px;border-bottom:1px solid #e8ecf2;vertical-align:middle;color:#1a2744}
 td:first-child{font-weight:700;color:#1863dc;text-align:center;width:40px}
-select{background:#fff;color:#1a2744;border:1px solid #dce3ed;border-radius:6px;padding:6px 8px;font-size:12px;cursor:pointer;outline:none;font-family:'Inter',sans-serif}
-select:focus{border-color:#1863dc;box-shadow:0 0 0 3px rgba(24,99,220,0.1)}
-select.saving{opacity:0.5;pointer-events:none}
+select,input[type=date]{background:#fff;color:#1a2744;border:1px solid #dce3ed;border-radius:6px;padding:6px 8px;font-size:12px;cursor:pointer;outline:none;font-family:'Inter',sans-serif}
+select:focus,input[type=date]:focus{border-color:#1863dc;box-shadow:0 0 0 3px rgba(24,99,220,0.1)}
+.saving{opacity:0.5;pointer-events:none}
 .pt{display:inline-block;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600}
 .pt-d{background:#dbeafe;color:#1d4ed8}.pt-t{background:#ede9fe;color:#6d28d9}
 .footer{text-align:center;padding:20px;color:#6b7c93;font-size:11px;border-top:1px solid #dce3ed;background:#fff}
@@ -83,14 +83,8 @@ select.saving{opacity:0.5;pointer-events:none}
   <div class="stat-card"><div class="sv c-red" id="sP">-</div><div class="sl">Pendentes</div></div>
 </div>
 <div class="prof-bar">
-  <div class="prof-card">
-    <div class="prof-av" style="background:linear-gradient(135deg,#1863dc,#0056a7)">FD</div>
-    <div class="prof-info"><h3>Prof. Felipe Damous</h3><p>Instrutor - Gabinetes impares</p></div>
-  </div>
-  <div class="prof-card">
-    <div class="prof-av" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">RT</div>
-    <div class="prof-info"><h3>Prof. Rodrigo Tercas</h3><p>Instrutor - Gabinetes pares</p></div>
-  </div>
+  <div class="prof-card"><div class="prof-av" style="background:linear-gradient(135deg,#1863dc,#0056a7)">FD</div><div class="prof-info"><h3>Prof. Felipe Damous</h3><p>Instrutor - Gabinetes impares</p></div></div>
+  <div class="prof-card"><div class="prof-av" style="background:linear-gradient(135deg,#7c3aed,#a855f7)">RT</div><div class="prof-info"><h3>Prof. Rodrigo Tercas</h3><p>Instrutor - Gabinetes pares</p></div></div>
 </div>
 <div class="tc">
   <div class="th">
@@ -108,19 +102,39 @@ select.saving{opacity:0.5;pointer-events:none}
 <div class="footer">MPMA x InovaJur - Projeto de Imersao e Implantacao de Assistentes IA | 2026<br><a href="https://www.mpma.mp.br" target="_blank">www.mpma.mp.br</a> | InovaJur - Capacitacao Juridica e IA</div>
 <div class="toast" id="toast"></div>
 <script>
-const API='https://script.google.com/macros/s/AKfycbxAispY3iQ_uFNG5aLSysS9IrBqQJQCqswC8BEf1SU6YzwCXOenT9qvFvsFaiOO3reXNQ/exec';
-let D=[];
-function toast(m,ok){const t=document.getElementById('toast');t.textContent=m;t.className='toast show '+(ok?'ok':'err');setTimeout(()=>t.className='toast',2500);}
+var API='https://script.google.com/macros/s/AKfycbxAispY3iQ_uFNG5aLSysS9IrBqQJQCqswC8BEf1SU6YzwCXOenT9qvFvsFaiOO3reXNQ/exec';
+var D=[];
+function toast(m,ok){var t=document.getElementById('toast');t.textContent=m;t.className='toast show '+(ok?'ok':'err');setTimeout(function(){t.className='toast'},2500);}
 function norm(v){if(!v)return'';return String(v).normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();}
+
+// Converte ISO date ou dd/mm/yyyy para dd/mm/yyyy
 function fmtDate(v){
   if(!v)return'';
   var s=String(v);
-  if(s.includes('T')){var d=new Date(s);return String(d.getUTCDate()).padStart(2,'0')+'/'+String(d.getUTCMonth()+1).padStart(2,'0')+'/'+d.getUTCFullYear();}
+  if(s.indexOf('T')>=0){var d=new Date(s);return String(d.getUTCDate()).padStart(2,'0')+'/'+String(d.getUTCMonth()+1).padStart(2,'0')+'/'+d.getUTCFullYear();}
   return s;
 }
+
+// Converte dd/mm/yyyy para yyyy-mm-dd (para input date)
+function toISO(v){
+  if(!v)return'';
+  var p=v.split('/');
+  if(p.length===3)return p[2]+'-'+p[1]+'-'+p[0];
+  return v;
+}
+
+// Converte yyyy-mm-dd para dd/mm/yyyy
+function fromISO(v){
+  if(!v)return'';
+  var p=v.split('-');
+  if(p.length===3)return p[2]+'/'+p[1]+'/'+p[0];
+  return v;
+}
+
 function matchDr(v){return norm(v)==='Sim'?'Sim':'Nao';}
 function matchSt(v){var n=norm(v);if(n==='Concluido')return'Concluido';if(n==='Em Andamento')return'Em Andamento';if(n==='Pendente')return'Pendente';return'Agendado';}
 function matchIm(v){var n=norm(v);if(n==='Implantado')return'Implantado';if(n==='Em Implantacao')return'Em Implantacao';return'Nao Implantado';}
+
 function parseRows(rows){
   return rows.map(function(r){return{
     n:String(r['N']||''),nm:r['Procurador']||'',pc:r['Procuradoria']||'',
@@ -128,24 +142,32 @@ function parseRows(rows){
     pf:r['Professor']||'',dr:matchDr(r['Drive']||''),st:matchSt(r['Status Imersao']||''),im:matchIm(r['Implantacao Assistente']||'')
   };});
 }
+
 async function loadData(){
   try{var res=await fetch(API);var json=await res.json();if(json&&json.length>0){D=parseRows(json);rT();document.getElementById('lastUp').textContent='Atualizado: '+new Date().toLocaleTimeString('pt-BR');}}
   catch(e){console.log('Erro',e);toast('Erro ao carregar',false);}
 }
+
 async function saveField(row,field,value,el){
   el.classList.add('saving');
-  if(field==='drive')D[row].dr=value;if(field==='status')D[row].st=value;if(field==='implantacao')D[row].im=value;
+  if(field==='drive')D[row].dr=value;
+  if(field==='status')D[row].st=value;
+  if(field==='implantacao')D[row].im=value;
+  if(field==='data'){D[row].dt=fromISO(value);value=fromISO(value);}
   uS();
   try{await fetch(API,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({row:row,field:field,value:value})});toast('Salvo na planilha!',true);}
   catch(e){toast('Erro ao salvar',false);}
   el.classList.remove('saving');
 }
+
 function rT(f){
   var t=document.getElementById('tB'),items=f||D;
   if(items.length===0){t.innerHTML='<tr><td colspan="9" class="loading">Carregando dados da planilha...</td></tr>';return;}
   t.innerHTML=items.map(function(p){
     var ri=D.indexOf(p),pc=p.pf.indexOf('Damous')>=0?'pt-d':'pt-t';
-    return'<tr><td>'+p.n+'</td><td style="font-weight:500">'+p.nm+'</td><td>'+p.pc+'</td><td>'+p.ex+'</td><td>'+p.dt+'</td>'
+    var dateVal=toISO(p.dt);
+    return'<tr><td>'+p.n+'</td><td style="font-weight:500">'+p.nm+'</td><td>'+p.pc+'</td><td>'+p.ex+'</td>'
+    +'<td><input type="date" value="'+dateVal+'" onchange="saveField('+ri+',\'data\',this.value,this)"></td>'
     +'<td><span class="pt '+pc+'">'+p.pf+'</span></td>'
     +'<td><select onchange="saveField('+ri+',\'drive\',this.value,this)"><option value="Nao"'+(p.dr==='Nao'?' selected':'')+'>Nao</option><option value="Sim"'+(p.dr==='Sim'?' selected':'')+'>Sim</option></select></td>'
     +'<td><select onchange="saveField('+ri+',\'status\',this.value,this)"><option value="Agendado"'+(p.st==='Agendado'?' selected':'')+'>Agendado</option><option value="Em Andamento"'+(p.st==='Em Andamento'?' selected':'')+'>Em Andamento</option><option value="Concluido"'+(p.st==='Concluido'?' selected':'')+'>Concluido</option><option value="Pendente"'+(p.st==='Pendente'?' selected':'')+'>Pendente</option></select></td>'
@@ -153,6 +175,7 @@ function rT(f){
   }).join('');
   uS();
 }
+
 function uS(){
   var t=D.length,c=D.filter(function(d){return d.st==='Concluido'}).length,
   a=D.filter(function(d){return d.st==='Agendado'||d.st==='Em Andamento'}).length,
